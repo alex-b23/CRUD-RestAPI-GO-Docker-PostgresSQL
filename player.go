@@ -99,7 +99,8 @@ func createPlayer(db *sql.DB) http.HandlerFunc {
 
         w.Header().Set("Content-Type", "application/json")
         w.WriteHeader(http.StatusCreated)
-        if err := json.NewEncoder(w).Encode(id); err != nil {
+        response := map[string]int{"id": id}
+        if err := json.NewEncoder(w).Encode(response); err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
         }
     }
@@ -143,6 +144,7 @@ func updatePlayer(db *sql.DB) http.HandlerFunc {
     }
 }
 
+// this function deletes a player from the database given the ID
 func deletePlayer(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         vars := mux.Vars(r)

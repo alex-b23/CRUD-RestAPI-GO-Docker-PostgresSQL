@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-    db, err := sql.Open("postgres", os.Getenv("DATABASE_URL")) // TO DO -> Connect Database Once Setup
+    db, err := sql.Open("postgres", os.Getenv("DATABASE_URL")) // TO DO -> Connect Database Once Docker Setup
     if err != nil {
         log.Fatal(err)
     }
