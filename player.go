@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"net/http"
 )
 
@@ -14,8 +15,36 @@ type Player struct {
     PlayerTotalGame int   `json:"player_total_game"`
 }
 
+// this function it's used to get all players from the database
 func getPlayer(db *sql.DB) http.HandlerFunc {
-    // implementation here
+    return func(w http.ResponseWriter, r *http.Request) {
+        rows, err := db.Query("SELECT * FROM players")
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer rows.Close()
+
+        players := []Player{}
+        for rows.Next() {
+            var u Player
+            if err := rows.Scan(&u.ID, &u.PlayerUsername, &u.PlayerPassword, &u.PlayerWins, &u.PlayerLoses, &u.PlayerTotalGame); err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+                return
+            }
+            players = append(players, u)
+        }
+        if err := rows.Err(); err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(players); err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+        }
+    }
 }
 
 func getPlayerByID(db *sql.DB) http.HandlerFunc {
