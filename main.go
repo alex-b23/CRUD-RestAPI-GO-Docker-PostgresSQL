@@ -38,5 +38,13 @@ func main() {
 	route.HandleFunc("/players/{id}", deletePlayer(db)).Methods("DELETE") // deletePlayer -> delete player from database
 
 	// used to start the server
-	log.Fatal(http.ListenAndServe(":3000", route))
+	log.Fatal(http.ListenAndServe(":3000", jsonMiddleware(route)))
+}
+
+// This Function will send our data as JSON to the server
+func jsonMiddleware (next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
 }
