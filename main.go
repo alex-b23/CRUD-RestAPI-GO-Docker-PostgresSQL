@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -18,6 +19,10 @@ func main() {
 
 	// creating the table``
 	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT, email TEXT)")
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
     route := mux.NewRouter()
     route.HandleFunc("/players", getPlayer(db)).Methods("GET") // -> method used to get all players
