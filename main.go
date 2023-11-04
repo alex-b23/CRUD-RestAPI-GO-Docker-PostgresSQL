@@ -16,6 +16,9 @@ func main() {
     }
     defer db.Close()
 
+	// creating the table``
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT, email TEXT)")
+
     route := mux.NewRouter()
     route.HandleFunc("/players", getPlayer(db)).Methods("GET") // -> method used to get all players
     route.HandleFunc("/players/{id}", getPlayerByID(db)).Methods("GET") // -> method used to get player by id
