@@ -18,7 +18,14 @@ func main() {
     defer db.Close()
 
 	// creating the table``
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT, email TEXT)")
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS players (
+		id SERIAL PRIMARY KEY, 
+		player_username TEXT, 
+		player_password TEXT, 
+		player_wins INTEGER, 
+		player_loses INTEGER, 
+		player_total_game INTEGER
+	)`)
 
 	if err != nil {
 		log.Fatal(err)
